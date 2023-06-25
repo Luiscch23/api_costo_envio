@@ -1,10 +1,17 @@
 
 <?php
+
+ini_set('display_errors', 1);
 // Ingresa tu clave de API de Google Maps
 $API_KEY = 'AIzaSyCOy3KVVLCFYACs6UQMAUpNDuiGHmrnqxY';
 
 $codigo_postal_origen = '25740';
 $codigo_postal_destino = '25790';
+
+$costo =22500;
+
+$precio_milla=2.2;
+
 
 // Construye la URL de la solicitud a la API de Google Maps Geocoding
 $url_origen = "https://maps.googleapis.com/maps/api/geocode/json?address={$codigo_postal_origen}&key={$API_KEY}";
@@ -30,7 +37,7 @@ if ($data_origen['status'] == 'OK' && $data_destino['status'] == 'OK') {
     // Realiza la solicitud a la API de Google Maps Directions
     $response_directions = file_get_contents($url_directions);
     $data_directions = json_decode($response_directions, true);
-
+  
     // Verifica si la solicitud fue exitosa
     if ($data_directions['status'] == 'OK') {
         // Extrae la distancia en metros del resultado
@@ -44,13 +51,14 @@ if ($data_origen['status'] == 'OK' && $data_destino['status'] == 'OK') {
 
         // Convierte el tiempo de segundos a minutos
         $tiempo_minutos = $tiempo_segundos / 60;
-
+        $precio_total = $costo+$distancia_km*$precio_milla;
         // Construye el JSON con la información solicitada
         $json_data = array(
             'origen' => $nombre_origen,
             'destino' => $nombre_destino,
             'distancia_km' => $distancia_km,
-            'tiempo_minutos' => $tiempo_minutos
+            'tiempo_minutos' => $tiempo_minutos,
+             'precio_total' => $precio_total
         );
 
         // Establece el encabezado del contenido como JSON
@@ -86,3 +94,5 @@ if ($data_origen['status'] == 'OK' && $data_destino['status'] == 'OK') {
     echo json_encode($json_error);
 }
 ?>
+//  git config --global user.email "l_carreon@uadec.edu.mx"
+//  git config --global user.name "Luiscch23"
