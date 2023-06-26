@@ -1,5 +1,7 @@
 
 <?php
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
 
 ini_set('display_errors', 1);
 // Ingresa tu clave de API de Google Maps
@@ -52,13 +54,23 @@ if ($data_origen['status'] == 'OK' && $data_destino['status'] == 'OK') {
         // Convierte el tiempo de segundos a minutos
         $tiempo_minutos = $tiempo_segundos / 60;
         $precio_total = $costo+$distancia_km*$precio_milla;
+
+        $coordenadas_origen = $data_origen['results'][0]['geometry']['location'];
+        $coordenadas_destino = $data_destino['results'][0]['geometry']['location'];
+    
+        // Construye la URL de la solicitud a la API de Google Maps Directions
+        $url_directions = "https://maps.googleapis.com/maps/api/directions/json?origin={$coordenadas_origen['lat']},{$coordenadas_origen['lng']}&destination={$coordenadas_destino['lat']},{$coordenadas_destino['lng']}&mode=driving&key={$API_KEY}";
+    
+    
         // Construye el JSON con la información solicitada
         $json_data = array(
             'origen' => $nombre_origen,
             'destino' => $nombre_destino,
             'distancia_km' => $distancia_km,
             'tiempo_minutos' => $tiempo_minutos,
-             'precio_total' => $precio_total
+            'precio_total' => $precio_total,
+            'coordenadas_origen' => $coordenadas_origen,
+            'coordenadas_destino' => $coordenadas_destino
         );
 
         // Establece el encabezado del contenido como JSON
@@ -94,5 +106,4 @@ if ($data_origen['status'] == 'OK' && $data_destino['status'] == 'OK') {
     echo json_encode($json_error);
 }
 ?>
-//  git config --global user.email "l_carreon@uadec.edu.mx"
-//  git config --global user.name "Luiscch23"
+
